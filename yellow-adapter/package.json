@@ -1,0 +1,20 @@
+{
+  "name": "yellow-adapter",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@erc7824/nitrolite": "^0.2.31",
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "viem": "^2.34.0",
+    "ws": "^8.18.3"
+  },
+  "description": ""
+}
