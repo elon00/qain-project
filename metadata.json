@@ -1,0 +1,8 @@
+{
+  "name": "Remix QAIN - Web 4.0 PQC Edge Platform",
+  "description": "Decentralized Web 4.0 edge computing network featuring Post-Quantum Cryptography (PQC), Conway cellular automaton AI decision engine, and DID authentication.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

@@ -1,7 +1,0 @@
-const { hardhat } = require("hardhat");
-
-/** @type import('hardhat/config').HardhatUserConfig */
-module.exports = {
-  solidity: "0.8.19",
-  plugins: ["@nomicfoundation/hardhat-toolbox"],
-};
