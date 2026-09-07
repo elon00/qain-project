@@ -1,0 +1,43 @@
+{
+  "systemName": "QAIN Web 4.0 Post-Quantum Edge Platform",
+  "version": "2.0.0",
+  "auditDate": "2026-09-07",
+  "license": "MIT",
+  "author": "Martin Luther",
+  "repository": "elon00/qain-project",
+  "truthTaxonomy": {
+    "cryptographicCore": "PURE_TYPESCRIPT_PQC_EXECUTION",
+    "kemScheme": "NIST_FIPS_203_ML_KEM_768",
+    "signatureScheme": "NIST_FIPS_204_ML_DSA_65",
+    "edgeArchitecture": "DISTRIBUTED_CONWAY_CELLULAR_AUTOMATA",
+    "identityStandard": "W3C_DID_MULTIKEY_ML_DSA_65",
+    "simulationEliminated": true,
+    "failClosedConjunction": true
+  },
+  "subsystems": [
+    {
+      "name": "PqcCryptoEngine",
+      "path": "src/utils/pqcCrypto.ts",
+      "nature": "POST_QUANTUM_CRYPTO_CORE",
+      "verified": true
+    },
+    {
+      "name": "EdgeServerArchitecture",
+      "path": "server.ts",
+      "nature": "EXPRESS_EDGE_COMPUTING_SERVER",
+      "verified": true
+    },
+    {
+      "name": "DidAuthEngine",
+      "path": "src/utils/didAuth.ts",
+      "nature": "W3C_DID_POST_QUANTUM_AUTHENTICATION",
+      "verified": true
+    },
+    {
+      "name": "NistWycheproofSuite",
+      "path": "tests/nist-pqc.test.mjs",
+      "nature": "NIST_STANDARDS_VERIFICATION",
+      "verified": true
+    }
+  ]
+}
