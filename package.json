@@ -22,7 +22,9 @@
     "vite": "^6.2.3",
     "express": "^4.21.2",
     "dotenv": "^17.2.3",
-    "motion": "^12.23.24"
+    "motion": "^12.23.24",
+    "@noble/hashes": "^1.8.0",
+    "@noble/post-quantum": "^0.5.2"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",
