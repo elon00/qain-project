@@ -228,3 +228,74 @@ export function verifyPqcMessage(signatureHex: string, message: string, publicKe
   }
 }
 
+
+
+/**
+ * Compatibility API for the QAIN UI/server.
+ * These helpers intentionally support the implemented ML-KEM-768 and ML-DSA-65
+ * primitives only; unsupported algorithm selections fail closed.
+ */
+export function generatePqcKeypair(algorithm: import('../types').PqcAlgorithm = 'ML-KEM-768'): import('../types').PqcKeypair {
+  if (algorithm !== 'ML-KEM-768' && algorithm !== 'ML-DSA-65') {
+    throw new Error(`Unsupported PQC algorithm: ${algorithm}`);
+  }
+  if (algorithm === 'ML-KEM-768') {
+    const pair = ml_kem768.keygen();
+    const pub = bytesToHex(pair.publicKey);
+    return { id: `pqc-${pub.slice(0,12)}`, algorithm, publicKey: pub, privateKey: bytesToHex(pair.secretKey), fingerprint: bytesToHex(sha256(pair.publicKey)).slice(0,16).toUpperCase(), bitSecurity: 192, matrixDimensions: 'k=3', createdAt: new Date().toISOString() };
+  }
+  const pair = ml_dsa65.keygen();
+  const pub = bytesToHex(pair.publicKey);
+  return { id: `pqc-${pub.slice(0,12)}`, algorithm, publicKey: pub, privateKey: bytesToHex(pair.secretKey), fingerprint: bytesToHex(sha256(pair.publicKey)).slice(0,16).toUpperCase(), bitSecurity: 192, matrixDimensions: 'k=6,l=5', createdAt: new Date().toISOString() };
+}
+
+function xorWithKey(data: Uint8Array, key: Uint8Array): Uint8Array {
+  return data.map((b, i) => b ^ key[i % key.length]);
+}
+
+export function encapsAndEncryptPayload(payload: string, publicKey: string, algorithm: import('../types').PqcAlgorithm = 'ML-KEM-768') {
+  if (algorithm !== 'ML-KEM-768') throw new Error('Payload encryption currently requires ML-KEM-768');
+  const keypair = publicKey ? null : generatePqcKeypair('ML-KEM-768');
+  const pub = publicKey || keypair!.publicKey;
+  const kem = ml_kem768.encapsulate(hexToBytes(pub));
+  const stream = hkdf(sha256, kem.sharedSecret, undefined, new TextEncoder().encode('qain-payload-v1'), 32);
+  const ciphertext = xorWithKey(new TextEncoder().encode(payload), stream);
+  return { ciphertext: bytesToHex(ciphertext), sharedSecretHash: bytesToHex(sha256(kem.sharedSecret)).slice(0,32), kemCiphertext: bytesToHex(kem.cipherText), logs: ['ML-KEM-768 encapsulation complete', 'Payload protected with derived one-time stream'] };
+}
+
+export function decapsAndDecryptPayload(encryptedPayload: string, privateKey: string, kemCiphertext: string) {
+  if (!privateKey || !kemCiphertext) throw new Error('Private key and KEM ciphertext are required');
+  const secret = ml_kem768.decapsulate(hexToBytes(kemCiphertext), hexToBytes(privateKey));
+  const stream = hkdf(sha256, secret, undefined, new TextEncoder().encode('qain-payload-v1'), 32);
+  const plaintext = xorWithKey(hexToBytes(encryptedPayload), stream);
+  return { decryptedText: new TextDecoder().decode(plaintext), sharedSecretHash: bytesToHex(sha256(secret)).slice(0,32), logs: ['ML-KEM-768 decapsulation complete', 'Payload recovered'] };
+}
+
+export function signWithDilithium(message: string, privateKey: string, algorithm: import('../types').PqcAlgorithm = 'ML-DSA-65') {
+  if (algorithm !== 'ML-DSA-65') throw new Error('Signing currently requires ML-DSA-65');
+  const sig = ml_dsa65.sign(new TextEncoder().encode(message), hexToBytes(privateKey));
+  return { signature: bytesToHex(sig), verificationHash: bytesToHex(sha256(sig)).slice(0,32) };
+}
+
+export function verifyDilithiumSignature(message: string, signature: string, publicKey: string) {
+  try {
+    const valid = ml_dsa65.verify(hexToBytes(signature), new TextEncoder().encode(message), hexToBytes(publicKey));
+    return { valid, details: valid ? 'ML-DSA-65 signature verified' : 'ML-DSA-65 signature rejected' };
+  } catch {
+    return { valid: false, details: 'ML-DSA-65 verification failed closed' };
+  }
+}
+
+export function runPqcBenchmarks(): import('../types').PqcBenchmarkResult[] {
+  const kemStart = performance.now(); const kem = ml_kem768.keygen(); const kemKeyGen = performance.now() - kemStart;
+  const encStart = performance.now(); const enc = ml_kem768.encapsulate(kem.publicKey); const encMs = performance.now() - encStart;
+  const decStart = performance.now(); ml_kem768.decapsulate(enc.cipherText, kem.secretKey); const decMs = performance.now() - decStart;
+  const dsaStart = performance.now(); const dsa = ml_dsa65.keygen(); const dsaKeyGen = performance.now() - dsaStart;
+  const msg = new TextEncoder().encode('qain-benchmark');
+  const signStart = performance.now(); const sig = ml_dsa65.sign(msg, dsa.secretKey); const signMs = performance.now() - signStart;
+  const verifyStart = performance.now(); ml_dsa65.verify(sig, msg, dsa.publicKey); const verifyMs = performance.now() - verifyStart;
+  return [
+    { algorithm:'ML-KEM-768', type:'KEM', keyGenTimeMs:kemKeyGen, encapsulateTimeMs:encMs, decapsulateTimeMs:decMs, publicKeySizeBytes:kem.publicKey.length, cipherOrSigSizeBytes:enc.cipherText.length, quantumSecurityBits:192 },
+    { algorithm:'ML-DSA-65', type:'Signature', keyGenTimeMs:dsaKeyGen, signTimeMs:signMs, verifyTimeMs:verifyMs, publicKeySizeBytes:dsa.publicKey.length, cipherOrSigSizeBytes:sig.length, quantumSecurityBits:192 }
+  ];
+}
