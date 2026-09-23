@@ -1,0 +1,29 @@
+name: Colosseum Copilot
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Require Colosseum token
+        env:
+          COLOSSEUM_COPILOT_PAT: ${{ secrets.COLOSSEUM_COPILOT_PAT }}
+        run: |
+          test -n "$COLOSSEUM_COPILOT_PAT" ||             (echo "Missing repository secret COLOSSEUM_COPILOT_PAT" && exit 2)
+
+      - name: Verify token and install Copilot skill
+        env:
+          COLOSSEUM_COPILOT_API_BASE: https://copilot.colosseum.com/api/v1
+          COLOSSEUM_COPILOT_PAT: ${{ secrets.COLOSSEUM_COPILOT_PAT }}
+        run: bash scripts/setup-colosseum-copilot.sh

@@ -10,6 +10,8 @@
     "preview": "vite preview",
     "clean": "rm -rf dist server.cjs",
     "lint": "tsc --noEmit",
+    "solana:verify:testnet": "node scripts/verify-solana-testnet.mjs",
+    "colosseum:setup": "bash scripts/setup-colosseum-copilot.sh",
     "qmoosa:finish": "npm run lint && npm run build"
   },
   "dependencies": {

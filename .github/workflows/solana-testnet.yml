@@ -1,0 +1,109 @@
+name: Solana Testnet
+
+on:
+  workflow_dispatch:
+    inputs:
+      deploy:
+        description: "Deploy QAIN program to Solana testnet"
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+env:
+  SOLANA_VERSION: "4.2.0"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pinned Solana toolchain
+        run: |
+          sh -c "$(curl -sSfL https://release.anza.xyz/v${SOLANA_VERSION}/install)"
+          echo "$HOME/.local/share/solana/install/active_release/bin" >> "$GITHUB_PATH"
+
+      - name: Verify Solana version
+        run: solana --version
+
+      - name: Build QAIN program
+        working-directory: program
+        run: cargo build-sbf
+
+      - name: Upload program artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: qain-solana-program
+          path: program/target/deploy/qain_solana_program.so
+
+  deploy-testnet:
+    if: inputs.deploy
+    needs: build
+    runs-on: ubuntu-latest
+    environment: solana-testnet
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pinned Solana toolchain
+        run: |
+          sh -c "$(curl -sSfL https://release.anza.xyz/v${SOLANA_VERSION}/install)"
+          echo "$HOME/.local/share/solana/install/active_release/bin" >> "$GITHUB_PATH"
+
+      - name: Verify Solana version
+        run: solana --version
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: qain-solana-program
+          path: program/target/deploy
+
+      - name: Validate required secrets
+        env:
+          DEPLOYER: ${{ secrets.SOLANA_TESTNET_DEPLOYER_KEYPAIR }}
+          PROGRAM_KEYPAIR: ${{ secrets.QAIN_SOLANA_PROGRAM_KEYPAIR }}
+        run: |
+          test -n "$DEPLOYER" || (echo "Missing SOLANA_TESTNET_DEPLOYER_KEYPAIR" && exit 2)
+          test -n "$PROGRAM_KEYPAIR" || (echo "Missing QAIN_SOLANA_PROGRAM_KEYPAIR" && exit 2)
+
+      - name: Configure testnet signer
+        env:
+          DEPLOYER: ${{ secrets.SOLANA_TESTNET_DEPLOYER_KEYPAIR }}
+          PROGRAM_KEYPAIR: ${{ secrets.QAIN_SOLANA_PROGRAM_KEYPAIR }}
+        run: |
+          umask 077
+          printf '%s' "$DEPLOYER" > "$RUNNER_TEMP/deployer.json"
+          printf '%s' "$PROGRAM_KEYPAIR" > "$RUNNER_TEMP/program-keypair.json"
+          solana config set --url https://api.testnet.solana.com
+          solana config set --keypair "$RUNNER_TEMP/deployer.json"
+          echo "PROGRAM_ID=$(solana address -k "$RUNNER_TEMP/program-keypair.json")" >> "$GITHUB_ENV"
+          solana balance
+
+      - name: Deploy QAIN program
+        run: |
+          solana program deploy \
+            --program-id "$RUNNER_TEMP/program-keypair.json" \
+            program/target/deploy/qain_solana_program.so
+
+      - name: Verify executable on testnet
+        env:
+          QAIN_SOLANA_PROGRAM_ID: ${{ env.PROGRAM_ID }}
+          SOLANA_RPC_URL: https://api.testnet.solana.com
+        run: node scripts/verify-solana-testnet.mjs
+
+      - name: Deployment summary
+        run: |
+          {
+            echo "## QAIN Solana Testnet Deployment"
+            echo ""
+            echo "- Program ID: `$PROGRAM_ID`"
+            echo "- Cluster: `testnet`"
+            echo "- Explorer: https://explorer.solana.com/address/$PROGRAM_ID?cluster=testnet"
+          } >> "$GITHUB_STEP_SUMMARY"
