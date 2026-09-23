@@ -8,14 +8,12 @@ on:
         required: true
         default: false
         type: boolean
-  pull_request:
-    paths:
-      - "program/**"
-      - "scripts/verify-solana-testnet.mjs"
-      - ".github/workflows/solana-testnet.yml"
 
 permissions:
   contents: read
+
+env:
+  SOLANA_VERSION: "4.2.0"
 
 jobs:
   build:
@@ -26,10 +24,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Solana toolchain
+      - name: Install pinned Solana toolchain
         run: |
-          sh -c "$(curl -sSfL https://release.anza.xyz/stable/install)"
+          sh -c "$(curl -sSfL https://release.anza.xyz/v${SOLANA_VERSION}/install)"
           echo "$HOME/.local/share/solana/install/active_release/bin" >> "$GITHUB_PATH"
+
+      - name: Verify Solana version
+        run: solana --version
 
       - name: Build QAIN program
         working-directory: program
@@ -42,7 +43,7 @@ jobs:
           path: program/target/deploy/qain_solana_program.so
 
   deploy-testnet:
-    if: github.event_name == 'workflow_dispatch' && inputs.deploy
+    if: inputs.deploy
     needs: build
     runs-on: ubuntu-latest
     environment: solana-testnet
@@ -51,10 +52,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Solana toolchain
+      - name: Install pinned Solana toolchain
         run: |
-          sh -c "$(curl -sSfL https://release.anza.xyz/stable/install)"
+          sh -c "$(curl -sSfL https://release.anza.xyz/v${SOLANA_VERSION}/install)"
           echo "$HOME/.local/share/solana/install/active_release/bin" >> "$GITHUB_PATH"
+
+      - name: Verify Solana version
+        run: solana --version
 
       - uses: actions/download-artifact@v4
         with:
@@ -84,7 +88,9 @@ jobs:
 
       - name: Deploy QAIN program
         run: |
-          solana program deploy             --program-id "$RUNNER_TEMP/program-keypair.json"             program/target/deploy/qain_solana_program.so
+          solana program deploy \
+            --program-id "$RUNNER_TEMP/program-keypair.json" \
+            program/target/deploy/qain_solana_program.so
 
       - name: Verify executable on testnet
         env:
