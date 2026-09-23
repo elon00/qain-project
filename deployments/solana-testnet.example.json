@@ -1,0 +1,12 @@
+{
+  "project": "QAIN",
+  "cluster": "testnet",
+  "rpcUrl": "https://api.testnet.solana.com",
+  "programId": "",
+  "deploymentSignature": "",
+  "explorerProgramUrl": "",
+  "explorerTransactionUrl": "",
+  "verifiedExecutable": false,
+  "verifiedAt": null,
+  "sourceCommit": ""
+}
