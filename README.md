@@ -63,3 +63,27 @@ Solana program builds are also checked by GitHub Actions when `program/**` or th
 ## Security
 
 Do not commit Gemini keys, Solana keypairs, wallet seed phrases, or the Colosseum PAT. Keep deploy credentials in a local secret store or protected GitHub environment.
+
+## x402 v2 paid API
+
+QAIN exposes a fail-closed paid endpoint at `POST /api/x402/pqc-insight`.
+
+It uses x402 protocol version 2 with the exact SVM payment scheme on Solana testnet by default:
+
+- Network: `solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z`
+- Test USDC mint: `4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU`
+- Request payment header: `PAYMENT-SIGNATURE`
+- 402 terms header: `PAYMENT-REQUIRED`
+- Settlement receipt header: `PAYMENT-RESPONSE`
+
+The server calls the configured x402 facilitator's `/verify` and `/settle` endpoints. Paid access remains unavailable until `X402_FACILITATOR_URL` and `X402_PAY_TO` are configured.
+
+## Colosseum Crypto World's Fair 2026
+
+Submission preparation lives in:
+
+- `docs/COLOSSEUM_WORLDS_FAIR_2026.md`
+- `docs/COLOSSEUM_VIDEO_SCRIPTS.md`
+- `colosseum-submission.json`
+
+The repository predates the September 14, 2026 competition start, so prior work must be disclosed accurately in the final submission.

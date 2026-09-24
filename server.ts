@@ -2,8 +2,9 @@ import express from "express";
 import path from "path";
 import { createServer as createViteServer } from "vite";
 import { GoogleGenAI } from "@google/genai";
-import { generatePqcKeypair, encapsAndEncryptPayload, decapsAndDecryptPayload, runPqcBenchmarks } from "./src/utils/pqcCrypto";
+import { generatePqcKeypair, generatePqcKeyPair, createPqcHybridSignature, computeDemoDigestHex, encapsAndEncryptPayload, decapsAndDecryptPayload, runPqcBenchmarks } from "./src/utils/pqcCrypto";
 import { createQainDid, generateZkIdentityProof } from "./src/utils/didAuth";
+import { handleX402ExactJson, SOLANA_TESTNET_CAIP2 } from "./src/utils/x402";
 
 const PORT = 3000;
 
@@ -27,6 +28,44 @@ async function startServer() {
       pqcEngine: "ML-KEM-768 / ML-DSA-65 Active",
       conwayAutomaton: "Online",
       timestamp: new Date().toISOString()
+    });
+  });
+
+  // x402 v2 paid QAIN service on Solana testnet.
+  // The route fails closed when the facilitator or payment recipient is not configured.
+  app.post("/api/x402/pqc-insight", async (req, res) => {
+    await handleX402ExactJson(req, res, async () => {
+      const { payload, serviceId } = req.body || {};
+      const canonicalPayload = typeof payload === "string"
+        ? payload
+        : JSON.stringify(payload ?? { message: "QAIN x402 paid PQC insight" });
+
+      const keyPair = generatePqcKeyPair("ML-DSA-65");
+      const requestDigest = computeDemoDigestHex(canonicalPayload);
+      const proof = createPqcHybridSignature(
+        requestDigest,
+        keyPair,
+        Number(process.env.X402_PRICE_ATOMIC || "1000") / 1_000_000,
+        serviceId || "qain-x402-pqc-insight",
+      );
+
+      return {
+        success: true,
+        protocol: "x402-v2",
+        network: process.env.X402_NETWORK || SOLANA_TESTNET_CAIP2,
+        service: serviceId || "qain-x402-pqc-insight",
+        requestDigest,
+        pqc: {
+          algorithm: keyPair.algorithm,
+          publicKey: keyPair.publicKey,
+          fingerprint: keyPair.publicKeyFingerprint,
+          hybridSignature: proof.hybridSignature,
+          mlDsaComponent: proof.mlDsaComponent,
+          quantumResistanceScore: proof.quantumResistanceScore,
+        },
+        benchmarks: runPqcBenchmarks(),
+        timestamp: new Date().toISOString(),
+      };
     });
   });
 

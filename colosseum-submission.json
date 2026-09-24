@@ -1,0 +1,25 @@
+{
+  "competition": "Crypto World's Fair — Fall 2026",
+  "productName": "QAIN Web 4.0 Post-Quantum Edge Platform",
+  "briefDescription": "Agentic post-quantum edge infrastructure combining Solana programs, x402 machine payments, DID identity, AI orchestration, and Conway-inspired coordination.",
+  "blockchains": ["Solana"],
+  "tools": [
+    "x402 v2",
+    "Solana/SVM",
+    "ML-KEM-768",
+    "ML-DSA-65",
+    "Gemini",
+    "DID",
+    "Colosseum Copilot"
+  ],
+  "github": "https://github.com/elon00/qain-project",
+  "webApp": "https://elon00.github.io/qain-project/",
+  "presentationVideo": "TODO_FOUNDER_UPLOAD_2_TO_3_MINUTES",
+  "demoVideo": "TODO_FOUNDER_UPLOAD_MAX_3_MINUTES",
+  "logoOrGraphic": "TODO_FOUNDER_UPLOAD",
+  "team": "TODO_FOUNDER_PROFILE_AND_TEAM_MEMBERS",
+  "teamLocation": "TODO_FOUNDER_LOCATION",
+  "goToMarket": "Paid machine-to-machine PQC security and orchestration APIs for AI agents, edge workloads, and crypto infrastructure; x402 provides per-request monetization and Solana provides settlement.",
+  "demandValidation": "TODO_REAL_EVIDENCE_ONLY",
+  "preExistingWorkDisclosure": "Repository development predates September 14, 2026. The submission must disclose prior work; only competition-window work should be represented as hackathon work."
+}
