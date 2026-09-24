@@ -1,13 +1,11 @@
-name: QAIN Testnet Deploy
+name: QAIN Testnet Deploy Once
 
 on:
-  workflow_dispatch:
-    inputs:
-      confirm:
-        description: "Deploy QAIN to Solana testnet"
-        required: true
-        default: true
-        type: boolean
+  push:
+    branches:
+      - gh-pages
+    paths:
+      - ".github/workflows/qain-testnet-deploy-once.yml"
 
 permissions:
   contents: write
@@ -37,16 +35,8 @@ jobs:
           DEPLOYER: ${{ secrets.SOLANA_TESTNET_DEPLOYER_KEYPAIR }}
           PROGRAM_KEYPAIR: ${{ secrets.QAIN_SOLANA_PROGRAM_KEYPAIR }}
         run: |
-          missing=0
-          if [ -z "$DEPLOYER" ]; then
-            echo "::error::Missing SOLANA_TESTNET_DEPLOYER_KEYPAIR"
-            missing=1
-          fi
-          if [ -z "$PROGRAM_KEYPAIR" ]; then
-            echo "::error::Missing QAIN_SOLANA_PROGRAM_KEYPAIR"
-            missing=1
-          fi
-          exit "$missing"
+          test -n "$DEPLOYER" || (echo "Missing SOLANA_TESTNET_DEPLOYER_KEYPAIR" && exit 2)
+          test -n "$PROGRAM_KEYPAIR" || (echo "Missing QAIN_SOLANA_PROGRAM_KEYPAIR" && exit 2)
 
       - name: Configure signer
         env:

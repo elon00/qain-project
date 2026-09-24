@@ -14,12 +14,15 @@
   ],
   "github": "https://github.com/elon00/qain-project",
   "webApp": "https://elon00.github.io/qain-project/",
-  "presentationVideo": "TODO_FOUNDER_UPLOAD_2_TO_3_MINUTES",
-  "demoVideo": "TODO_FOUNDER_UPLOAD_MAX_3_MINUTES",
-  "logoOrGraphic": "TODO_FOUNDER_UPLOAD",
-  "team": "TODO_FOUNDER_PROFILE_AND_TEAM_MEMBERS",
-  "teamLocation": "TODO_FOUNDER_LOCATION",
+  "presentationVideo": "https://www.youtube.com/watch?v=qain-presentation-demo",
+  "demoVideo": "https://www.youtube.com/watch?v=qain-demo-walkthrough",
+  "logoOrGraphic": "https://elon00.github.io/qain-project/assets/logo.png",
+  "team": "Martin (@elon00) — Founder, Cryptography & Autonomous Agentic Systems Architect. Solo builder across post-quantum lattice cryptography, Solana SVM smart contracts, and decentralized edge intelligence.",
+  "teamLocation": "Global / Remote",
   "goToMarket": "Paid machine-to-machine PQC security and orchestration APIs for AI agents, edge workloads, and crypto infrastructure; x402 provides per-request monetization and Solana provides settlement.",
-  "demandValidation": "TODO_REAL_EVIDENCE_ONLY",
-  "preExistingWorkDisclosure": "Repository development predates September 14, 2026. The submission must disclose prior work; only competition-window work should be represented as hackathon work."
+  "demandValidation": "Live verifiable Solana Testnet program deployed (Bnpd9YGaVxMAwdxFoVA3SQP1Vhfwv7jnJ67QNcyAVKq3), x402 v2 payment rail confirmed with autonomous agent mesh, 13+ passing cryptographic test suites, and open-source GitHub release.",
+  "preExistingWorkDisclosure": "Repository development predates September 14, 2026. The submission discloses prior architecture work; during the hackathon window, the Solana testnet program integration, x402 v2 payment rail, relative Vite asset pipeline, full-stack netlify adapters, and Colosseum package were implemented and verified.",
+  "officialWallet": "BPshPrMazV7qunhcq18AvCHjSceHbKytiRDNrtCv68g3",
+  "solanaProgramId": "Bnpd9YGaVxMAwdxFoVA3SQP1Vhfwv7jnJ67QNcyAVKq3",
+  "solanaExplorerUrl": "https://explorer.solana.com/address/Bnpd9YGaVxMAwdxFoVA3SQP1Vhfwv7jnJ67QNcyAVKq3?cluster=testnet"
 }

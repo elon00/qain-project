@@ -1,0 +1,14 @@
+{
+  "project": "QAIN",
+  "cluster": "testnet",
+  "rpcUrl": "https://api.testnet.solana.com",
+  "programId": "Bnpd9YGaVxMAwdxFoVA3SQP1Vhfwv7jnJ67QNcyAVKq3",
+  "deploymentSignature": "5DKkhtQWdPBZvxUokeoDYnhKuCXEtM2UMa2pgFdCgJyS9VLTTVz9MPCqc368gHMvvBLqtwsy2nbVQJF9dqGqgxDN",
+  "explorerProgramUrl": "https://explorer.solana.com/address/Bnpd9YGaVxMAwdxFoVA3SQP1Vhfwv7jnJ67QNcyAVKq3?cluster=testnet",
+  "explorerTransactionUrl": "https://explorer.solana.com/tx/5DKkhtQWdPBZvxUokeoDYnhKuCXEtM2UMa2pgFdCgJyS9VLTTVz9MPCqc368gHMvvBLqtwsy2nbVQJF9dqGqgxDN?cluster=testnet",
+  "executable": true,
+  "owner": "BPFLoaderUpgradeab1e11111111111111111111111",
+  "lamports": 833120,
+  "verifiedAt": "2026-09-24T13:55:10.777Z",
+  "sourceCommit": ""
+}

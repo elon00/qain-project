@@ -24,7 +24,7 @@ async function rpc(method, params = []) {
 
 const [accountInfo, signatures] = await Promise.all([
   rpc("getAccountInfo", [programId, { encoding: "base64", commitment: "confirmed" }]),
-  rpc("getSignaturesForAddress", [programId, { limit: 10 }, "confirmed"]),
+  rpc("getSignaturesForAddress", [programId, { limit: 10, commitment: "confirmed" }]),
 ]);
 
 if (!accountInfo?.value?.executable) {
