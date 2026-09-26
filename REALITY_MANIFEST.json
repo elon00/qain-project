@@ -11,33 +11,34 @@
     "signatureScheme": "NIST_FIPS_204_ML_DSA_65",
     "edgeArchitecture": "DISTRIBUTED_CONWAY_CELLULAR_AUTOMATA",
     "identityStandard": "W3C_DID_MULTIKEY_ML_DSA_65",
-    "simulationEliminated": true,
-    "failClosedConjunction": true
+    "simulationEliminated": false,
+    "failClosedConjunction": true,
+    "simulationPolicy": "Selected cryptographic paths pass forbidden fake-marker scans; this is not proof that every project path is non-simulated."
   },
   "subsystems": [
     {
       "name": "PqcCryptoEngine",
       "path": "src/utils/pqcCrypto.ts",
       "nature": "POST_QUANTUM_CRYPTO_CORE",
-      "verified": true
+      "repositoryEvidencePresent": true
     },
     {
       "name": "EdgeServerArchitecture",
       "path": "server.ts",
       "nature": "EXPRESS_EDGE_COMPUTING_SERVER",
-      "verified": true
+      "repositoryEvidencePresent": true
     },
     {
       "name": "DidAuthEngine",
       "path": "src/utils/didAuth.ts",
       "nature": "W3C_DID_POST_QUANTUM_AUTHENTICATION",
-      "verified": true
+      "repositoryEvidencePresent": true
     },
     {
       "name": "NistWycheproofSuite",
       "path": "tests/nist-pqc.test.mjs",
       "nature": "NIST_STANDARDS_VERIFICATION",
-      "verified": true
+      "repositoryEvidencePresent": true
     }
   ]
 }
