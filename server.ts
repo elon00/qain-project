@@ -150,8 +150,8 @@ async function startServer() {
             priority: "Critical"
           }
         ],
-        quantumThreatAssessment: "Active quantum resistance level 192-bit. Recommended updating lattice dimensions to 4x4.",
-        pqcRecommendation: "Enforce ML-KEM-1024 + ML-DSA-87 for all inter-node Web 4.0 packet relays."
+        quantumThreatAssessment: "No live quantum-threat measurement is available from this fallback path.",
+        pqcRecommendation: "Use standardized ML-KEM/ML-DSA configurations only after threat-model and interoperability review; this fallback does not certify a security level."
       });
     }
 
@@ -192,8 +192,8 @@ Ensure valid JSON output without markdown backticks if possible, or plain clean 
               priority: "High"
             }
           ],
-          quantumThreatAssessment: "Post-quantum lattice security parameters verified.",
-          pqcRecommendation: "Enforce ML-KEM-768 for all edge data pipelines."
+          quantumThreatAssessment: "The model response could not be parsed into evidence-backed structured data.",
+          pqcRecommendation: "No algorithm upgrade is automatically recommended without a defined threat model and validated implementation evidence."
         };
       }
 
@@ -226,11 +226,11 @@ Ensure valid JSON output without markdown backticks if possible, or plain clean 
     if (!ai) {
       return res.json({
         success: true,
-        threatScore: 12,
-        qubitRequirementToBreak: 4096,
-        timeToQuantumBreakthroughYears: "30+ years (Shor's Algorithm Proof)",
-        analysis: "Payload protected by ML-KEM lattice Ring-LWE structure. Shor's algorithm polynomial time reduction is ineffective against non-abelian lattice problems.",
-        recommendation: "Maintain ML-KEM-768 or upgrade to ML-KEM-1024 for high-grade military tasks."
+        threatScore: null,
+        qubitRequirementToBreak: null,
+        timeToQuantumBreakthroughYears: null,
+        analysis: "No defensible live quantum-break timeline or qubit requirement is produced without an explicit cryptanalytic model and evidence.",
+        recommendation: "Treat the implemented PQC algorithms as research integrations and follow current standards plus independent cryptographic review."
       });
     }
 
@@ -260,9 +260,9 @@ Provide a structured JSON response with:
         parsed = JSON.parse(cleaned);
       } catch {
         parsed = {
-          threatScore: 8,
-          qubitRequirementToBreak: 6144,
-          timeToQuantumBreakthroughYears: "40+ years",
+          threatScore: null,
+          qubitRequirementToBreak: null,
+          timeToQuantumBreakthroughYears: null,
           analysis: text,
           recommendation: "Use ML-KEM-1024 for long-term secure archival."
         };
@@ -272,11 +272,11 @@ Provide a structured JSON response with:
     } catch (err) {
       res.json({
         success: true,
-        threatScore: 10,
-        qubitRequirementToBreak: 4096,
-        timeToQuantumBreakthroughYears: "30+ years",
-        analysis: "Lattice-based PQC withstands quantum computing attacks.",
-        recommendation: "Use ML-KEM-768."
+        threatScore: null,
+        qubitRequirementToBreak: null,
+        timeToQuantumBreakthroughYears: null,
+        analysis: "The AI provider failed, so no quantitative quantum-security claim is available.",
+        recommendation: "Keep the endpoint fail-honest: use tested standardized implementations and independent review rather than invented forecasts."
       });
     }
   });
