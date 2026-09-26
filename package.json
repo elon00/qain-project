@@ -13,7 +13,8 @@
     "test": "tsx --test tests/nist-pqc.test.mjs tests/x402.test.ts",
     "solana:verify:testnet": "node scripts/verify-solana-testnet.mjs",
     "colosseum:setup": "bash scripts/setup-colosseum-copilot.sh",
-    "qmoosa:finish": "npm run lint && npm test && npm run build"
+    "qmoosa:finish": "npm run lint && npm test && npm run build",
+    "test:nextgen": "node --test tests/nextgen-integrations.test.mjs"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",
