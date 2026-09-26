@@ -1,5 +1,5 @@
 /**
- * Deutsch-Jozsa Quantum Algorithm (Quantum-Project2) — URS Evidence Certificate Generator
+ * Deutsch-Jozsa Quantum Algorithm (Quantum-Project2) — Internal Evidence Bundle Generator
  * Runs truth checks, pure-TS verification, NIST test suite, crypto auditor, and URS gates,
  * then signs the evidence certificate with NIST FIPS 204 ML-DSA-65.
  */
@@ -11,7 +11,7 @@ import { sha256 } from '@noble/hashes/sha256.js';
 import { ml_dsa65 } from '@noble/post-quantum/ml-dsa.js';
 
 console.log('╔══════════════════════════════════════════════════════════════════════════╗');
-console.log('║   DEUTSCH-JOZSA QUANTUM PROJECT — URS EVIDENCE CERTIFICATE               ║');
+console.log('║   DEUTSCH-JOZSA QUANTUM PROJECT — INTERNAL ENGINEERING EVIDENCE BUNDLE               ║');
 console.log('╚══════════════════════════════════════════════════════════════════════════╝\n');
 
 function run(cmd: string, title: string) {
@@ -28,13 +28,13 @@ function run(cmd: string, title: string) {
 }
 
 // 1. Official NIST Vectors
-run('node C:/Users/marti/quantumshield/node_modules/tsx/dist/cli.mjs tests/nist-pqc.test.mjs', '[1/3] Running Official NIST & Wycheproof Test Suite');
+run('npx tsx tests/nist-pqc.test.mjs', '[1/3] Running Official NIST & Wycheproof Test Suite');
 
 // 2. Standalone Crypto Audit
 run('node scripts/audit-crypto.mjs', '[2/3] Running Standalone Cryptographic Auditor');
 
 // 3. Universal Reality Engine
-run('node C:/Users/marti/quantumshield/node_modules/tsx/dist/cli.mjs scripts/reality-universal.ts', '[3/3] Running Universal Reality Engine');
+run('npx tsx scripts/reality-universal.ts', '[3/3] Running Universal Reality Engine');
 
 // Generate Deterministic Root Key for Certificate Signing
 const rootSeed = new Uint8Array(32).fill(0x93);
@@ -42,7 +42,7 @@ const certAuthority = ml_dsa65.keygen(rootSeed);
 
 const certificatePayload = {
   protocol: 'QAIN-Web4-PostQuantum-Edge-Platform',
-  standard: 'UNIVERSAL_REALITY_SYSTEM_v1.0',
+  standard: 'INTERNAL_REALITY_CHECKS_v1.0',
   timestamp: new Date().toISOString(),
   truthTaxonomy: {
     cryptographicCore: 'PURE_TYPESCRIPT_PQC_EXECUTION',
@@ -77,7 +77,7 @@ const signatureBytes = ml_dsa65.sign(payloadBytes, certAuthority.secretKey);
 
 const certificate = {
   ...certificatePayload,
-  certificateAuthority: {
+  internalSigner: {
     scheme: 'NIST_FIPS_204_ML_DSA_65',
     publicKeyHex: Buffer.from(certAuthority.publicKey).toString('hex'),
     payloadSha256: Buffer.from(payloadHash).toString('hex'),
@@ -90,9 +90,9 @@ const certPath = path.resolve('URS_EVIDENCE_CERTIFICATE.json');
 fs.writeFileSync(certPath, JSON.stringify(certificate, null, 2), 'utf8');
 
 console.log('══════════════════════════════════════════════════════════════════════════');
-console.log('🏆 URS EVIDENCE CERTIFICATE SUCCESSFULLY GENERATED & SIGNED');
-console.log(`Certificate Path: ${certPath}`);
-console.log(`Authority PubKey: ${certificate.certificateAuthority.publicKeyHex.substring(0, 32)}...`);
-console.log(`Signature:        ${certificate.certificateAuthority.signatureHex.substring(0, 32)}...`);
-console.log(`Master SHA-256:   ${certificate.certificateAuthority.payloadSha256}`);
+console.log('🏆 INTERNAL ENGINEERING EVIDENCE BUNDLE SUCCESSFULLY GENERATED & SIGNED');
+console.log(`Evidence Path: ${certPath}`);
+console.log(`Authority PubKey: ${certificate.internalSigner.publicKeyHex.substring(0, 32)}...`);
+console.log(`Signature:        ${certificate.internalSigner.signatureHex.substring(0, 32)}...`);
+console.log(`Master SHA-256:   ${certificate.internalSigner.payloadSha256}`);
 console.log('══════════════════════════════════════════════════════════════════════════\n');
