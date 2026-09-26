@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "clean": "rm -rf dist server.cjs",
     "lint": "tsc --noEmit",
-    "test": "tsx --test tests/nist-pqc.test.mjs tests/x402.test.ts",
+    "test": "tsx --test tests/nist-pqc.test.mjs tests/x402.test.ts && npm run test:nextgen",
     "solana:verify:testnet": "node scripts/verify-solana-testnet.mjs",
     "colosseum:setup": "bash scripts/setup-colosseum-copilot.sh",
     "qmoosa:finish": "npm run lint && npm test && npm run build",
