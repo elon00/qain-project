@@ -5,6 +5,7 @@ import { GoogleGenAI } from "@google/genai";
 import { generatePqcKeypair, generatePqcKeyPair, createPqcHybridSignature, computeDemoDigestHex, encapsAndEncryptPayload, decapsAndDecryptPayload, runPqcBenchmarks } from "./src/utils/pqcCrypto";
 import { createQainDid, generateZkIdentityProof } from "./src/utils/didAuth";
 import { handleX402ExactJson, SOLANA_TESTNET_CAIP2 } from "./src/utils/x402";
+import { createMcpRuntime, createSolanaActionMetadata, createBlinkUrl } from "./src/integrations/nextgen";
 
 const PORT = 3000;
 
@@ -28,6 +29,61 @@ async function startServer() {
       pqcEngine: "ML-KEM-768 / ML-DSA-65 Active",
       conwayAutomaton: "Online",
       timestamp: new Date().toISOString()
+    });
+  });
+
+  const qainMcp = createMcpRuntime({
+    name: "qain-project",
+    version: "0.0.0",
+    tools: [
+      {
+        name: "health",
+        description: "Return QAIN runtime capability status without claiming external certification.",
+        execute: async () => ({
+          platform: "QAIN Web 4.0 Edge Computing Platform",
+          pqc: "research integration",
+          x402: "configured only when facilitator/payee environment is present",
+          network: process.env.X402_NETWORK || SOLANA_TESTNET_CAIP2,
+        }),
+      },
+      {
+        name: "pqc_benchmark",
+        description: "Run the repository PQC benchmark function and return local engineering measurements.",
+        execute: async () => runPqcBenchmarks(),
+      },
+    ],
+  });
+
+  app.post("/api/mcp", async (req, res) => {
+    const response = await qainMcp.handle(req.body);
+    return res.status(response.error ? 400 : 200).json(response);
+  });
+
+  app.get("/api/actions/pqc-insight", (_req, res) => {
+    return res.json(createSolanaActionMetadata({
+      title: "QAIN PQC Insight",
+      icon: "https://github.com/elon00.png",
+      description: "QAIN Action discovery endpoint. Paid execution remains fail-closed until a wallet transaction builder and x402 settlement path are both verified.",
+      label: "Open QAIN",
+      disabled: true,
+      error: "Wallet-signable Action transaction builder is not yet verified in this runtime.",
+    }));
+  });
+
+  app.post("/api/actions/pqc-insight", (_req, res) => {
+    return res.status(501).json({
+      error: {
+        message: "No transaction is fabricated. Enable a tested wallet-signable Solana transaction builder before activating this Action.",
+      },
+    });
+  });
+
+  app.get("/api/blinks/pqc-insight", (req, res) => {
+    const base = process.env.PUBLIC_BASE_URL || `${req.protocol}://${req.get("host")}`;
+    return res.json({
+      action: `${base}/api/actions/pqc-insight`,
+      blink: createBlinkUrl(`${base}/api/actions/pqc-insight`),
+      status: "DISCOVERY_ONLY",
     });
   });
 
