@@ -1,89 +1,20 @@
-# QAIN Web 4.0 Post-Quantum Edge Platform
+<div align="center">
+<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
+</div>
 
-QAIN combines a React/TypeScript application, post-quantum cryptography, DID authentication, Conway-based orchestration, AI assistance, and a Solana on-chain program target.
+# Run and deploy your AI Studio app
 
-## Local application
+This contains everything you need to run your app locally.
 
-```bash
-npm install
-cp .env.example .env.local
-npm run dev
-```
+View your app in AI Studio: https://ai.studio/apps/ad0bbccd-a4a2-45a4-8eaf-ad823042a6bd
 
-Set `GEMINI_API_KEY` in your local environment before using Gemini-backed features.
+## Run Locally
 
-## Solana testnet
+**Prerequisites:**  Node.js
 
-The repository now contains a native Rust Solana program under `program/`, a testnet verification script, and a GitHub Actions workflow that can build and deploy the program.
 
-Build locally after installing the current Solana/Agave toolchain:
-
-```bash
-cd program
-cargo build-sbf
-```
-
-Verify a deployed program:
-
-```bash
-export QAIN_SOLANA_PROGRAM_ID="<program-id>"
-export SOLANA_RPC_URL="https://api.testnet.solana.com"
-npm run solana:verify:testnet
-```
-
-The deployment workflow is `.github/workflows/solana-testnet.yml`. Actual deployment requires two repository/environment secrets:
-
-- `SOLANA_TESTNET_DEPLOYER_KEYPAIR`: funded testnet payer/deployer keypair JSON.
-- `QAIN_SOLANA_PROGRAM_KEYPAIR`: dedicated program keypair JSON that fixes the QAIN Program ID.
-
-The workflow never prints either private key.
-
-## Colosseum Copilot
-
-Set your active token outside source control:
-
-```bash
-export COLOSSEUM_COPILOT_API_BASE="https://copilot.colosseum.com/api/v1"
-export COLOSSEUM_COPILOT_PAT="<your-token>"
-npm run colosseum:setup
-```
-
-See `docs/COLOSSEUM_COPILOT.md` for the QAIN-specific research prompt and security notes.
-
-## Quality gates
-
-```bash
-npm run lint
-npm run build
-npm run qmoosa:finish
-```
-
-Solana program builds are also checked by GitHub Actions when `program/**` or the testnet workflow changes.
-
-## Security
-
-Do not commit Gemini keys, Solana keypairs, wallet seed phrases, or the Colosseum PAT. Keep deploy credentials in a local secret store or protected GitHub environment.
-
-## x402 v2 paid API
-
-QAIN exposes a fail-closed paid endpoint at `POST /api/x402/pqc-insight`.
-
-It uses x402 protocol version 2 with the exact SVM payment scheme on Solana testnet by default:
-
-- Network: `solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z`
-- Test USDC mint: `4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU`
-- Request payment header: `PAYMENT-SIGNATURE`
-- 402 terms header: `PAYMENT-REQUIRED`
-- Settlement receipt header: `PAYMENT-RESPONSE`
-
-The server calls the configured x402 facilitator's `/verify` and `/settle` endpoints. Paid access remains unavailable until `X402_FACILITATOR_URL` and `X402_PAY_TO` are configured.
-
-## Colosseum Crypto World's Fair 2026
-
-Submission preparation lives in:
-
-- `docs/COLOSSEUM_WORLDS_FAIR_2026.md`
-- `docs/COLOSSEUM_VIDEO_SCRIPTS.md`
-- `colosseum-submission.json`
-
-The repository predates the September 14, 2026 competition start, so prior work must be disclosed accurately in the final submission.
+1. Install dependencies:
+   `npm install`
+2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
+3. Run the app:
+   `npm run dev`
